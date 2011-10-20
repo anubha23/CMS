@@ -4,8 +4,7 @@ class User extends Controller {
   
   function __construct() {
     $this->user = Load::model('user_model');
-	if (isset($_SESSION['time']))
-	{
+    if (isset($_SESSION['time'])){
       if (Session::timeOut())
         Helper::redirect('user/logout');
       else
@@ -46,6 +45,7 @@ class User extends Controller {
   }
   
   function browse() {
+    $this->_loggedIn(); // check if the user is logged in or not
     $userlist = $this->user->browse(10);
     $data = array(
       'title' => 'list of users',
@@ -55,6 +55,7 @@ class User extends Controller {
   }
   
   public function add() {// just having add makes sense as the URL would be user/add which is meaningful rather than user/add_user
+    $this->_loggedIn();
     if ($_POST['filled']) {
       $result=$this->user->add($_POST['username'],$_POST['password'],$_POST['firstname'],$_POST['lastname']); // Need to sanitize $_POST for security
       $notice['message'] = ($result) ? 'New user added' : 'There was a problem adding the user to the database' ;
@@ -80,6 +81,7 @@ class User extends Controller {
   
   public function delete($id)
   {
+  $this->_loggedIn();
   $result=$this->user->delete($id);
   $notice['message'] = ($result) ? 'User deleted' : 'There was a problem deleting the user' ;
       $notice['type'] = ($result) ? 'success' : 'danger';
@@ -95,7 +97,8 @@ class User extends Controller {
   
   public function edit($id = NULL)
   {
-  if ($_POST['filled'])
+  $this->_loggedIn();
+  if (isset($_POST['filled']))
   {
   $result=$this->user->edit($_POST['user_id'],$_POST['firstname'],$_POST['lastname'],$_POST['designation']);
 
@@ -125,7 +128,8 @@ class User extends Controller {
 
 public function changepwd()
 {
-  if ($_POST['changesubmitted'])
+  $this->_loggedIn();
+  if (isset($_POST['changesubmitted']))
   {
   $result=$this->user->changepwd($_SESSION['username'],$_POST['oldpwd'],$_POST['newpwd']);
   $val = ($result) ? 'Password changed successfully' : 'Password could not be changed' ;
@@ -151,5 +155,11 @@ Load::view('user_list.php',$data); //make a notice page for Password Changed
       );
       Load::view('change_password.php', $data);
   }
-  }  
+  }
+private function _loggedIn() {  
+  if(Session::get('isLoggedIn')) {
+    return true;
+  }
+  else Helper::redirect('user/logout');
+}  
 }

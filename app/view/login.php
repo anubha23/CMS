@@ -4,7 +4,7 @@
        <fieldset>
 	<legend>Login</legend>
 	<div class="main row">
-  <p class="alert-message"><?php print Session::getFlashMessage(); ?></p>
+ <p class="alert-message"><?php print Session::getFlashMessage(); ?></p>
 </div>
 	<div class="clearfix">
 		<label>Username:</label>   

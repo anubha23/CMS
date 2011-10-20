@@ -10,7 +10,8 @@ class App{
     if(isset($_SERVER['PATH_INFO'])) {
       $segment_array = explode('/',$_SERVER['PATH_INFO']);
     }
-
+    $this->segment = new stdClass(); // instantiating the object to avoid the strict standards warning in PHP5
+    
     // Our URLS will be in the form - index.php/CONTROLLER/METHOD/PARAMETERS
     $this->segment->controller = (isset($segment_array[1]) && $segment_array[1]) ? $segment_array[1] : DEFAULT_CONTROLLER;  // if controller is not set from the URL, load a default
     $this->segment->method = (isset($segment_array[2]) && $segment_array[2]) ? $segment_array[2] : 'index';                 // if method is not set, load 'index' method
